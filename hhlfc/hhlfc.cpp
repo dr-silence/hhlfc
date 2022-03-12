@@ -4,9 +4,8 @@
 #include <mutex>
 #include <list>
 
-
-template<class I, class M>
-void ProcessData(I& next, I end, M& mutex)
+template<class I, class M, class Consumer>
+void ProcessData(I& next, I end, M& mutex, Consumer consumeData)
 {
 	using value_type = typename std::iterator_traits<I>::value_type;
 
@@ -19,8 +18,17 @@ void ProcessData(I& next, I end, M& mutex)
 		}
 
 		if (!value) break;
+
+		consumeData(*value);
 	}
 }
+
+template<class T>
+void ConsumeData(T const& data)
+{
+
+}
+
 
 int main()
 {
@@ -30,7 +38,7 @@ int main()
 	auto begin = numbers.begin();
 	std::mutex mutex;
 
-	ProcessData(begin, numbers.end(), mutex);
+	ProcessData(begin, numbers.end(), mutex, ConsumeData<decltype(numbers)::value_type>);
 
 	return 0;
 }
