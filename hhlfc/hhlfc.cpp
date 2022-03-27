@@ -3,6 +3,7 @@
 #include <optional>
 #include <mutex>
 #include <list>
+#include <functional>
 
 template<class I, class M, class Consumer>
 void ProcessData(I& next, I end, M& mutex, Consumer consumeData)
@@ -23,10 +24,10 @@ void ProcessData(I& next, I end, M& mutex, Consumer consumeData)
 	}
 }
 
-template<class T>
-void ConsumeData(T const& data)
+template<class M, class T>
+void ConsumeData(M& mutex, T const& data)
 {
-
+	std::lock_guard lock(mutex);
 }
 
 
@@ -37,8 +38,10 @@ int main()
 
 	auto begin = numbers.begin();
 	std::mutex mutex;
+	std::mutex consumeMutex;
 
-	ProcessData(begin, numbers.end(), mutex, ConsumeData<decltype(numbers)::value_type>);
+	auto consumeData = std::bind(ConsumeData<decltype(consumeMutex), decltype(numbers)::value_type>, std::ref(consumeMutex), std::placeholders::_1);
+	ProcessData(begin, numbers.end(), mutex, consumeData);
 
 	return 0;
 }
