@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <iterator>
 #include <optional>
@@ -25,19 +26,34 @@ void ProcessData(I& next, I end, M& mutex, Consumer consumeData)
 	}
 }
 
+void DelayThisThread()
+{
+#if false
+	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+#elif false
+	std::this_thread::yield();
+#endif
+};
+
 using data_type = int;
 
 int main()
 {
 	std::list<data_type> numbers;
-	numbers.push_back(2); numbers.push_back(3); numbers.push_back(5); numbers.push_back(7); numbers.push_back(11); numbers.push_back(13);
+	[&numbers]() {
+		std::fstream numbersFile("Input.txt", std::ios_base::in);
+
+		int number;
+		while (numbersFile >> number)
+			numbers.push_back(number);
+	}();
 
 	auto begin = numbers.begin();
 	std::mutex mutex;
 
 	std::list<data_type> data1, data2;
 
-	auto consumeData = [](auto& data, auto value) {data.push_back(value); /*todo: erase sleep*/std::this_thread::sleep_for(std::chrono::milliseconds(1)); };
+	auto consumeData = [](auto& data, auto value) {data.push_back(value); DelayThisThread(); };
 
 	using consume_data = std::function<void(data_type)>;
 	consume_data consumeData1 = std::bind(consumeData, std::ref(data1), std::placeholders::_1);
