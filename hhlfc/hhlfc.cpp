@@ -16,13 +16,21 @@ void ProcessData(I& next, I end, M& mutex, OI& out, OM& outMutex, Consumer consu
 	while (true)
 	{
 		std::optional<value_type> value;
+		I current;
 		{
 			std::lock_guard lock(mutex);
+			current = next;
+
 			if (next != end)
 			{
-				*out++ = *next;
 				value = *next++;
 			}
+		}
+
+		{
+			std::lock_guard lock(outMutex);
+			if (current != end)
+				*out++ = *current;
 		}
 
 		if (!value) break;
