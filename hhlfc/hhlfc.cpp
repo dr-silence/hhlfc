@@ -89,5 +89,7 @@ int main()
 	thread1.join();
 	thread2.join();
 
+	std::sort(result.begin(), result.end());
+
 	return 0;
 }
