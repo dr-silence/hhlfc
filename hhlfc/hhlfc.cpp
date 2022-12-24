@@ -89,17 +89,5 @@ int main()
 	thread1.join();
 	thread2.join();
 
-	auto printNumbers = [](auto const& name, auto& numbers)
-	{
-		std::cout << name << std::endl;
-		int i = 0;
-		std::for_each(numbers.begin(), numbers.end(), [&i](auto number) { std::cout << ((i++ > 0) ? ", " : "") << number; });
-		std::cout << std::endl;
-	};
-
-	printNumbers("data1", data1);
-
-	printNumbers("data2", data2);
-
 	return 0;
 }
