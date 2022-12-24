@@ -8,7 +8,7 @@
 #include <thread>
 
 // todo: Использовать boost::synchronized_value вместо явного использования мьютекса?
-template<class I, class OI, class M, class Consumer>
+template<class I, class M, class OI, class Consumer>
 void ProcessData(I& next, I end, OI& out, M& mutex, Consumer consumeData)
 {
 	using value_type = typename std::iterator_traits<I>::value_type;
@@ -69,7 +69,7 @@ int main()
 	result.reserve(numbers.size());
 	auto resultInserter = std::back_inserter(result);
 	// todo: const_iterator?
-	auto processData = std::bind(ProcessData<decltype(begin), decltype(resultInserter), decltype(mutex), consume_data>, std::ref(begin), numbers.end(), std::ref(resultInserter), std::ref(mutex), std::placeholders::_1);
+	auto processData = std::bind(ProcessData<decltype(begin), decltype(mutex), decltype(resultInserter), consume_data>, std::ref(begin), numbers.end(), std::ref(resultInserter), std::ref(mutex), std::placeholders::_1);
 
 	auto processData1 = std::bind(processData, consumeData1);
 	auto processData2 = std::bind(processData, consumeData2);
