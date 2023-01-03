@@ -45,9 +45,9 @@ void DelayThisThread()
 };
 
 using number_type = int;
-using position_type = int;
+using number_position_type = int;
 
-using prime_numbers = std::map<position_type, number_type>;
+using prime_numbers = std::map<number_position_type, number_type>;
 
 int main()
 {
@@ -64,7 +64,7 @@ int main()
 
 		numbers.sort();
 		{
-			position_type position{ 1 };
+			number_position_type position{ 1 };
 
 			std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](number_type number) {return std::make_pair(position++, number); });
 		}
