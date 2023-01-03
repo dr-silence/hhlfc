@@ -96,19 +96,17 @@ int main()
 	thread1.join();
 	thread2.join();
 
-	auto getPrimeValue = [](prime_numbers::value_type primeNumber) { return primeNumber.second; };
-
-	auto writePrimesToFile = [](auto from, auto to, auto getValue, auto fileName)
+	auto writePrimesToFile = [](prime_numbers const& primes, auto fileName)
 	{
 		std::ofstream numbersFile(fileName);
 		std::ostream_iterator<number_type>	outputIt(numbersFile, " ");
-		std::transform(from, to, outputIt, [getValue](auto p) {return getValue(p); });
+		std::transform(std::begin(primes), std::end(primes), outputIt, [](auto p) { return p.second; });
 	};
 
-	writePrimesToFile(data1.begin(), data1.end(), getPrimeValue, "Thread1.txt");
-	writePrimesToFile(data2.begin(), data2.end(), getPrimeValue, "Thread2.txt");
+	writePrimesToFile(data1, "Thread1.txt");
+	writePrimesToFile(data2, "Thread2.txt");
 
-	writePrimesToFile(result.begin(), result.end(), getPrimeValue, "Result.txt");
+	writePrimesToFile(result, "Result.txt");
 
 	return 0;
 }
