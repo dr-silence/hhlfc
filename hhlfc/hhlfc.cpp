@@ -72,7 +72,7 @@ int main()
 	}();
 
 	numbers.sort();
-	std::map<position_type, data_type> primeNumbers;
+	prime_numbers primeNumbers;
 	{
 		position_type position{ 1 };
 
