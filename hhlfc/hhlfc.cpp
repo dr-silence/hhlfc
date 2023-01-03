@@ -4,6 +4,7 @@
 #include <optional>
 #include <mutex>
 #include <list>
+#include <map>
 #include <functional>
 #include <thread>
 
@@ -69,6 +70,12 @@ int main()
 	}();
 
 	std::sort(numbers.begin(), numbers.end());
+	std::map<position_type, data_type> primeNumbers;
+	{
+		position_type position{ 1 };
+
+		std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](data_type number) {return std::make_pair(number, position++); });
+	}
 
 	auto begin = numbers.begin();
 	std::mutex mutex;
