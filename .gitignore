@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/hhlfc/Thread2.txt
+/hhlfc/Thread1.txt
+/hhlfc/Result.txt
