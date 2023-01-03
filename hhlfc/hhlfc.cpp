@@ -48,8 +48,14 @@ void DelayThisThread()
 #endif
 };
 
-// todo: Реализовать класс представления простого числа: порядковый номер простого числа, значение простого числа.
 using data_type = int;
+using position_type = int;
+
+struct PositionedNumber
+{
+	data_type Value;
+	position_type Position;
+};
 
 int main()
 {
