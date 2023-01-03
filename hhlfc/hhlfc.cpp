@@ -96,17 +96,16 @@ int main()
 	thread1.join();
 	thread2.join();
 
-	auto writePrimesToFile = [](prime_numbers const& primes, auto fileName)
+	auto writePrimesToFile = [](prime_numbers const& primes, auto os)
 	{
-		std::ofstream numbersFile(fileName);
-		std::ostream_iterator<number_type>	outputIt(numbersFile, " ");
+		std::ostream_iterator<number_type>	outputIt(os, " ");
 		std::transform(std::begin(primes), std::end(primes), outputIt, [](auto p) { return p.second; });
 	};
 
-	writePrimesToFile(data1, "Thread1.txt");
-	writePrimesToFile(data2, "Thread2.txt");
+	writePrimesToFile(data1, std::ofstream("Thread1.txt"));
+	writePrimesToFile(data2, std::ofstream("Thread2.txt"));
 
-	writePrimesToFile(result, "Result.txt");
+	writePrimesToFile(result, std::ofstream("Result.txt"));
 
 	return 0;
 }
