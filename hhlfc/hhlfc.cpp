@@ -47,12 +47,6 @@ void DelayThisThread()
 using data_type = int;
 using position_type = int;
 
-struct PositionedNumber
-{
-	data_type Value;
-	position_type Position;
-};
-
 using prime_numbers = std::map<position_type, data_type>;
 
 int main()
