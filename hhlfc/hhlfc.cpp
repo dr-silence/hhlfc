@@ -12,20 +12,15 @@
 template<class I, class M, class OI, class OM, class Consumer>
 void ProcessData(I& next, I end, M& mutex, OI& out, OM& outMutex, Consumer consumeData)
 {
-	using value_type = typename std::iterator_traits<I>::value_type;
-
 	while (true)
 	{
-		std::optional<value_type> value;
 		I current;
 		{
 			std::lock_guard lock(mutex);
 			current = next;
 
 			if (next != end)
-			{
-				value = *next++;
-			}
+				next++;
 		}
 
 		{
@@ -34,9 +29,9 @@ void ProcessData(I& next, I end, M& mutex, OI& out, OM& outMutex, Consumer consu
 				*out++ = *current;
 		}
 
-		if (!value) break;
+		if (current == end) break;
 
-		consumeData(*value);
+		consumeData(*current);
 	}
 }
 
@@ -62,41 +57,42 @@ using prime_numbers = std::map<position_type, data_type>;
 
 int main()
 {
-	std::list<data_type> numbers;
-	[&numbers]() {
-		std::fstream numbersFile("Input.txt", std::ios_base::in);
-
-		int number;
-		while (numbersFile >> number)
-			numbers.push_back(number);
-	}();
-
-	numbers.sort();
 	prime_numbers primeNumbers;
 	{
-		position_type position{ 1 };
+		std::list<data_type> numbers;
+		[&numbers]() {
+			std::fstream numbersFile("Input.txt", std::ios_base::in);
 
-		std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](data_type number) {return std::make_pair(position++, number); });
+			int number;
+			while (numbersFile >> number)
+				numbers.push_back(number);
+		}();
+
+		numbers.sort();
+		{
+			position_type position{ 1 };
+
+			std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](data_type number) {return std::make_pair(position++, number); });
+		}
 	}
 
-	auto begin = numbers.begin();
+	auto begin = primeNumbers.begin();
 	std::mutex mutex;
 
-	std::list<data_type> data1, data2;
+	prime_numbers data1, data2;
 
-	auto consumeData = [](auto& data, auto value) { data.push_back(value); DelayThisThread(); };
+	auto consumeData = [](auto& data, auto value) { data.insert(value); DelayThisThread(); };
 
-	using consume_data = std::function<void(data_type)>;
+	using consume_data = std::function<void(prime_numbers::value_type)>;
 	consume_data consumeData1 = std::bind(consumeData, std::ref(data1), std::placeholders::_1);
 	consume_data consumeData2 = std::bind(consumeData, std::ref(data2), std::placeholders::_1);
 
-	std::vector<decltype(numbers)::value_type> result;
-	result.reserve(numbers.size());
-	auto resultInserter = std::back_inserter(result);
+	prime_numbers result;
+	auto resultInserter = std::inserter(result, result.end());
 	std::mutex resultMutex;
 
 	// todo: const_iterator?
-	auto processData = std::bind(ProcessData<decltype(begin), decltype(mutex), decltype(resultInserter), decltype(resultMutex), consume_data>, std::ref(begin), numbers.end(), std::ref(mutex), std::ref(resultInserter), std::ref(resultMutex), std::placeholders::_1);
+	auto processData = std::bind(ProcessData<decltype(begin), decltype(mutex), decltype(resultInserter), decltype(resultMutex), consume_data>, std::ref(begin), primeNumbers.end(), std::ref(mutex), std::ref(resultInserter), std::ref(resultMutex), std::placeholders::_1);
 
 	auto processData1 = std::bind(processData, consumeData1);
 	auto processData2 = std::bind(processData, consumeData2);
@@ -105,8 +101,6 @@ int main()
 
 	thread1.join();
 	thread2.join();
-
-	std::sort(result.begin(), result.end());
 
 	return 0;
 }
