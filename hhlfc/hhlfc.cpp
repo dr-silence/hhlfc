@@ -68,6 +68,8 @@ int main()
 			numbers.push_back(number);
 	}();
 
+	std::sort(numbers.begin(), numbers.end());
+
 	auto begin = numbers.begin();
 	std::mutex mutex;
 
