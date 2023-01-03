@@ -74,7 +74,7 @@ int main()
 	{
 		position_type position{ 1 };
 
-		std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](data_type number) {return std::make_pair(number, position++); });
+		std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](data_type number) {return std::make_pair(position++, number); });
 	}
 
 	auto begin = numbers.begin();
