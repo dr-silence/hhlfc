@@ -45,7 +45,7 @@ void DelayThisThread()
 };
 
 using number_value_type = int;
-using number_position_type = int;
+using number_position_type = unsigned;
 
 using prime_numbers = std::map<number_position_type, number_value_type>;
 
@@ -99,7 +99,7 @@ int main()
 	auto writePrimesToFile = [](prime_numbers const& primes, auto os)
 	{
 		std::ostream_iterator<number_value_type>	outputIt(os, " ");
-		std::transform(std::begin(primes), std::end(primes), outputIt, [](auto p) { return p.second; });
+		std::transform(std::begin(primes), std::end(primes), outputIt, [](auto p) { return std::get<number_value_type>(p); });
 	};
 
 	writePrimesToFile(data1, std::ofstream("Thread1.txt"));
