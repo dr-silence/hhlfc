@@ -58,6 +58,8 @@ struct PositionedNumber
 	position_type Position;
 };
 
+using prime_numbers = std::map<position_type, data_type>;
+
 int main()
 {
 	std::list<data_type> numbers;
