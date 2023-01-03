@@ -44,16 +44,16 @@ void DelayThisThread()
 #endif
 };
 
-using data_type = int;
+using number_type = int;
 using position_type = int;
 
-using prime_numbers = std::map<position_type, data_type>;
+using prime_numbers = std::map<position_type, number_type>;
 
 int main()
 {
 	prime_numbers primeNumbers;
 	{
-		std::list<data_type> numbers;
+		std::list<number_type> numbers;
 		[&numbers]() {
 			std::fstream numbersFile("Input.txt", std::ios_base::in);
 
@@ -66,7 +66,7 @@ int main()
 		{
 			position_type position{ 1 };
 
-			std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](data_type number) {return std::make_pair(position++, number); });
+			std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](number_type number) {return std::make_pair(position++, number); });
 		}
 	}
 
