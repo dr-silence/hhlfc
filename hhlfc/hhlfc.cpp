@@ -35,15 +35,6 @@ void ProcessData(I& next, I end, M& mutex, OI& out, OM& outMutex, Consumer consu
 	}
 }
 
-void DelayThisThread()
-{
-#if false
-	std::this_thread::sleep_for(std::chrono::milliseconds(1));
-#elif false
-	std::this_thread::yield();
-#endif
-};
-
 using number_value_type = int;
 using number_position_type = unsigned;
 
@@ -75,7 +66,7 @@ int main()
 
 	prime_numbers data1, data2;
 
-	auto consumeData = [](auto& data, auto value) { data.insert(value); DelayThisThread(); };
+	auto consumeData = [](auto& data, auto value) { data.insert(value); };
 
 	using consume_data = std::function<void(prime_numbers::value_type)>;
 	consume_data consumeData1 = std::bind(consumeData, std::ref(data1), std::placeholders::_1);
