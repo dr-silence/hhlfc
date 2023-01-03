@@ -44,16 +44,16 @@ void DelayThisThread()
 #endif
 };
 
-using number_type = int;
+using number_value_type = int;
 using number_position_type = int;
 
-using prime_numbers = std::map<number_position_type, number_type>;
+using prime_numbers = std::map<number_position_type, number_value_type>;
 
 int main()
 {
 	prime_numbers primeNumbers;
 	{
-		std::list<number_type> numbers;
+		std::list<number_value_type> numbers;
 		[&numbers]() {
 			std::fstream numbersFile("Input.txt", std::ios_base::in);
 
@@ -66,7 +66,7 @@ int main()
 		{
 			number_position_type position{ 1 };
 
-			std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](number_type number) {return std::make_pair(position++, number); });
+			std::transform(numbers.begin(), numbers.end(), std::inserter(primeNumbers, primeNumbers.end()), [&position](number_value_type number) {return std::make_pair(position++, number); });
 		}
 	}
 
@@ -98,7 +98,7 @@ int main()
 
 	auto writePrimesToFile = [](prime_numbers const& primes, auto os)
 	{
-		std::ostream_iterator<number_type>	outputIt(os, " ");
+		std::ostream_iterator<number_value_type>	outputIt(os, " ");
 		std::transform(std::begin(primes), std::end(primes), outputIt, [](auto p) { return p.second; });
 	};
 
